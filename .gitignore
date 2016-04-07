@@ -1,0 +1,14 @@
+# vagrant ignores
+.vagrant
+
+# buildout ignores
+eggs
+develop-eggs
+bin
+parts
+src/cfnupdateservice.egg-info
+.installed.cfg
+
+# python ignores
+*.pyc
+*.pyo

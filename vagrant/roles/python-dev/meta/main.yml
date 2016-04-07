@@ -1,0 +1,4 @@
+---
+dependencies:
+    # depend on the epel repository to be present
+    - role: epel
