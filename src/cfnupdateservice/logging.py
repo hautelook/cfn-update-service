@@ -56,7 +56,7 @@ class Logger(object):
 
     def generate_event(self, level, message):
         """Generate a logging event."""
-        return {'level': level.name, 'logger': self.name, 'message': message, 'timestamp': self.__get_timestamp()}
+        return {'level': level.name, 'logger': self.name, 'message': message, 'timestamp': self.get_timestamp()}
 
 
     def format(self, event):

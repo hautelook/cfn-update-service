@@ -317,6 +317,16 @@ class LoggerUnitTest(unittest.TestCase):
 
         mock_utcnow.strftime.assert_called_with("%Y-%m-%dT%H:%M:%SZ")
 
+    @mock.patch.object(Logger, 'get_timestamp')
+    def test_generate_event(self, mock_get_timestamp):
+        """Tests generating a logging event."""
+        mock_get_timestamp.return_value = "CUKE"
+
+        reference = Logger("arbitraryname")
+        expected = { 'level': "ERROR", "message": "the message", "logger": "arbitraryname", "timestamp": "CUKE"}
+
+        self.assertEqual(reference.generate_event(Levels.ERROR, "the message"), expected)
+
     @mock.patch.object(Logger, 'write')
     @mock.patch.object(Logger, 'format')
     @mock.patch.object(Logger, 'generate_event')
