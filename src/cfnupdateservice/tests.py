@@ -13,6 +13,10 @@ from datetime import datetime, timedelta, tzinfo
 class CloudFormationUpdateServiceTestCase(unittest.TestCase):
     """Tests the CloudFormationUpdateService."""
 
+    def __init__(self, *args, **kwargs):
+        super(self.__class__, self).__init__(*args, **kwargs)
+        self.iterator = 0
+
     @mock.patch.object(Logger, '__new__', autospec=True)
     def test_constructor(self, mock_logger):
         """Tests that the constructor works."""
@@ -32,6 +36,45 @@ class CloudFormationUpdateServiceTestCase(unittest.TestCase):
         # assert nones
         self.assertIsNone(reference.last_tick)
         self.assertIsNone(reference.last_checksum)
+
+    @mock.patch.object(CloudFormationUpdateService, 'wait_until_next')
+    @mock.patch.object(CloudFormationUpdateService, 'execute_update')
+    @mock.patch.object(CloudFormationUpdateService, 'check_for_updates')
+    def test_start(self, mock_check_for_updates, mock_execute_update, mock_wait_until_next):
+        """Tests that the start service method works as expected."""
+        self.iterator = 0
+        def condition():
+            result = self.iterator <= 1
+            self.iterator += 1
+            return result
+
+        reference = CloudFormationUpdateService(
+            stack_name=None,
+            resource=None,
+            region=None,
+            delay_minutes=1,
+            logger=mock.Mock()
+        )
+
+        mock_check_for_updates.return_value = False
+
+        # test where no updates
+        reference.start(condition=condition)
+        mock_check_for_updates.assert_called_with()
+        mock_wait_until_next.assert_called_with()
+        mock_execute_update.assert_not_called()
+        # test where updates
+        self.iterator = 0
+        mock_check_for_updates.reset_mock()
+        mock_check_for_updates.return_value = True
+        mock_wait_until_next.reset_mock()
+        mock_execute_update.reset_mock()
+
+        reference.start(condition=condition)
+        mock_check_for_updates.assert_called_with()
+        mock_execute_update.assert_called_with()
+        mock_wait_until_next.assert_called_with()
+
 
     @mock.patch.object(CloudFormationUpdateService, 'fetch_metadata_checksum', autospec=True)
     def test_check_for_updates(self, mock_fetch_metadata):
