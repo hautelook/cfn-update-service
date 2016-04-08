@@ -139,16 +139,17 @@ class CloudFormationUpdateServiceTestCase(unittest.TestCase):
         # test a difference of one minute exactly from the last tick
         reference.wait_until_next()
         mock_sleep.assert_not_called() # should return immediately
+        self.assertEqual(reference.last_tick, now) # should update last tick
 
         # test a difference of greater than one minute
-        now = datetime(2000, 1, 1, 10, 1, 15, 0, utc) # 1 minute 15 seconds
+        now = datetime(2000, 1, 1, 10, 2, 15, 0, utc) # 1 minute 15 seconds
         mock_datetime.utcnow.return_value = now
 
         reference.wait_until_next()
         mock_sleep.assert_not_called()
 
         # test a difference of less than one minute
-        now = datetime(2000, 1, 1, 10, 0, 30, 0, utc) # 30 seconds
+        now = datetime(2000, 1, 1, 10, 2, 45, 0, utc) # 30 seconds
         mock_datetime.utcnow.return_value = now
 
         reference.wait_until_next()

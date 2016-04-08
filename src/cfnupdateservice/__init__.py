@@ -73,7 +73,12 @@ class CloudFormationUpdateService(object):
 
     def start(self, condition = lambda: True):
         """Start the update service. This will block the main thread in a while/sleep loop."""
+        # et the initial last tick
         self.last_tick = datetime.utcnow()
+        # print out diagnostic information
+        self.logger.debug(("Configuration: stack_name={stack_name}, resource={resource}, region={region}, " +
+                "delay_minutes={delay_minutes}").format(stack_name=self.stack_name, resource=self.resource,
+            region=self.region, delay_minutes=self.delay_minutes))
 
         while condition():
             if self.check_for_updates():
@@ -103,11 +108,17 @@ class CloudFormationUpdateService(object):
 
     def wait_until_next(self):
         """Sleep until the next time to run."""
-        difference = datetime.utcnow() - self.last_tick
-        print difference
+        # calculate the since_last_tick
+        since_last_tick = datetime.utcnow() - self.last_tick
+        wait_period = timedelta(seconds=self.delay_minutes * 60.0)
+
+        # set the last tick
+        self.last_tick = datetime.utcnow()
+
         # if there is a period to sleep for, then sleep
-        if difference < timedelta(seconds=self.delay_minutes * 60):
-            sleep(difference.total_seconds())
+        if since_last_tick.total_seconds() < wait_period.total_seconds():
+            # eval the difference remaining in the wait period apart from the time since last tick
+            sleep(wait_period.total_seconds() - since_last_tick.total_seconds())
 
     def fetch_metadata_checksum(self):
         """Fetch metadata as a string from the CloudFormation stack resource."""
