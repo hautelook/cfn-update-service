@@ -115,6 +115,10 @@ class CloudFormationUpdateService(object):
         # set the last tick
         self.last_tick = datetime.utcnow()
 
+        # debug
+        self.logger.debug("since last tick: {since_last_tick}, wait period: {wait_period}".format(
+            since_last_tick=since_last_tick.total_seconds(), wait_period=wait_period.total_seconds()))
+
         # if there is a period to sleep for, then sleep
         if since_last_tick.total_seconds() < wait_period.total_seconds():
             # eval the difference remaining in the wait period apart from the time since last tick
