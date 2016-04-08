@@ -1,0 +1,7 @@
+---
+ - name: upgrade pip packages
+   command: pip install --upgrade {{ item }}
+   with_items:
+       - pip
+       - setuptools
+   become: yes

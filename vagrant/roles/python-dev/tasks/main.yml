@@ -1,0 +1,13 @@
+---
+ - name: install python dev packages
+   yum: name={{ item }} state=present
+   with_items:
+       - python-devel
+       - python-setuptools
+       - python-pip
+       - gcc
+       - make
+       - unzip
+   notify:
+       - upgrade pip packages
+   become: yes
