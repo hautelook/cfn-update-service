@@ -37,12 +37,17 @@ class CloudFormationUpdateServiceTestCase(unittest.TestCase):
         self.assertIsNone(reference.last_tick)
         self.assertIsNone(reference.last_checksum)
 
+    @mock.patch('cfnupdateservice.datetime')
     @mock.patch.object(CloudFormationUpdateService, 'wait_until_next')
     @mock.patch.object(CloudFormationUpdateService, 'execute_update')
     @mock.patch.object(CloudFormationUpdateService, 'check_for_updates')
-    def test_start(self, mock_check_for_updates, mock_execute_update, mock_wait_until_next):
+    def test_start(self, mock_check_for_updates, mock_execute_update, mock_wait_until_next, mock_datetime):
         """Tests that the start service method works as expected."""
         self.iterator = 0
+
+        now = mock.MagicMock()
+        mock_datetime.utcnow.return_value = now
+
         def condition():
             result = self.iterator <= 1
             self.iterator += 1
@@ -60,6 +65,9 @@ class CloudFormationUpdateServiceTestCase(unittest.TestCase):
 
         # test where no updates
         reference.start(condition=condition)
+        # should set the last tick to now
+        self.assertEqual(reference.last_tick, now)
+
         mock_check_for_updates.assert_called_with()
         mock_wait_until_next.assert_called_with()
         mock_execute_update.assert_not_called()

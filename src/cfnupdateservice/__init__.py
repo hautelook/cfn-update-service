@@ -73,6 +73,8 @@ class CloudFormationUpdateService(object):
 
     def start(self, condition = lambda: True):
         """Start the update service. This will block the main thread in a while/sleep loop."""
+        self.last_tick = datetime.utcnow()
+
         while condition():
             if self.check_for_updates():
                 self.execute_update()
