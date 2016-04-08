@@ -77,7 +77,10 @@ class CloudFormationUpdateService(object):
 
         while condition():
             if self.check_for_updates():
+                self.logger.debug("Updates have been found to the resource's CloudFormation metadata, executing an update.")
                 self.execute_update()
+            else:
+                self.logger.debug("No updates have been found, waiting until the next interval.")
 
             self.wait_until_next()
 
