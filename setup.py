@@ -5,14 +5,14 @@ from setuptools import setup, find_packages
 
 setup(
     name = "cfnupdateservice",
-    version = "1.0.0",
+    version = "1.0.1",
     packages = find_packages('src'),
     package_dir = { '': 'src'},
     author = "Naftuli Tzvi Kay",
     author_email = "rfkrocktk@gmail.com",
+    license = "MIT",
+    description = "CloudFormation Metadata Update Service",
     url = "https://github.com/hautelook/cfn-update-service",
-    setup_requires=['setuptools-markdown'],
-    long_description_markdown_filename='README.md',
     install_requires = [
         'setuptools',
     ],
