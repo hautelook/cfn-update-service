@@ -1,0 +1,17 @@
+[Unit]
+Description=CloudFormation Update Service
+After=cfn-init.service network.target
+# only start if cfn-init.service started already
+Requisite=cfn-init.service
+
+[Service]
+Type=simple
+EnvironmentFile=/etc/sysconfig/cfn-init
+ExecStart=/usr/bin/cfn-update-service --delay 1 -l syslog-json -s ${CFN_STACK_NAME} -r ${CFN_RESOURCE_ID} --region ${CFN_REGION}
+StandardOutput=syslog
+# keep this service alive at all costs
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target
