@@ -115,9 +115,6 @@ class CloudFormationUpdateService(object):
         wait_period = timedelta(seconds=self.delay_minutes * 60.0)
         sleep_duration = max(wait_period - since_last_tick, timedelta(seconds=0))
 
-        # preserve the last tick time
-        before_sleep = datetime.utcnow()
-
         # debug
         self.logger.debug("since last tick: {since_last_tick}, wait period: {wait_period}, sleep duration: {sleep_duration}".format(
             since_last_tick=since_last_tick.total_seconds(), wait_period=wait_period.total_seconds(), sleep_duration=sleep_duration.total_seconds()))
@@ -126,8 +123,8 @@ class CloudFormationUpdateService(object):
         if sleep_duration.total_seconds() > 0.0:
             sleep(sleep_duration.total_seconds())
 
-        # set the last tick time
-        self.last_tick = before_sleep
+        # set the last tick time as now, after the sleep, this was bug #2
+        self.last_tick = datetime.utcnow()
 
     def fetch_metadata_checksum(self):
         """Fetch metadata as a string from the CloudFormation stack resource."""
