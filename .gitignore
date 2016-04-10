@@ -3,6 +3,7 @@
 
 # buildout ignores
 .eggs
+dist
 eggs
 develop-eggs
 bin
