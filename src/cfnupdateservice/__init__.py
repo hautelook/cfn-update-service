@@ -81,13 +81,15 @@ class CloudFormationUpdateService(object):
             region=self.region, delay_minutes=self.delay_minutes))
 
         while condition():
+            # sleep first, not last
+            self.wait_until_next()
+
             if self.check_for_updates():
+
                 self.logger.debug("Updates have been found to the resource's CloudFormation metadata, executing an update.")
                 self.execute_update()
             else:
                 self.logger.debug("No updates have been found, waiting until the next interval.")
-
-            self.wait_until_next()
 
     def check_for_updates(self):
         """Perform update check."""
