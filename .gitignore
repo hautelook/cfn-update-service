@@ -2,6 +2,7 @@
 .vagrant
 
 # buildout ignores
+.eggs
 eggs
 develop-eggs
 bin

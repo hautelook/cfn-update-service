@@ -8,6 +8,11 @@ setup(
     version = "1.0.0",
     packages = find_packages('src'),
     package_dir = { '': 'src'},
+    author = "Naftuli Tzvi Kay",
+    author_email = "rfkrocktk@gmail.com",
+    url = "https://github.com/hautelook/cfn-update-service",
+    setup_requires=['setuptools-markdown'],
+    long_description_markdown_filename='README.md',
     install_requires = [
         'setuptools',
     ],
